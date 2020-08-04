@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.SetsActivity">
+    <androidx.appcompat.widget.Toolbar
+
+        android:id="@+id/toolbarSets"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        >
+    </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:text="Sets"
+        android:padding="16dp"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </TextView>
+    <GridView
+        android:verticalSpacing="16dp"
+        android:horizontalSpacing="16dp"
+        android:id="@+id/gridviewSets"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:columnWidth="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </GridView>
+</LinearLayout>
