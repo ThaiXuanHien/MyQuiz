@@ -57,7 +57,7 @@ public class SetsAdapter extends BaseAdapter {
                 Intent intent = new Intent(parent.getContext(), QuestionActivity.class);
 
                 intent.putExtra("sets", String.valueOf(numOfSets));
-                intent.putExtra("SETNO", position + 1);
+                intent.putExtra("SETNO", position);
                 parent.getContext().startActivity(intent);
             }
         });

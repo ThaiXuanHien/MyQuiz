@@ -30,18 +30,6 @@ public class CategoryActivity extends AppCompatActivity {
 
         grvCategory = (GridView) findViewById(R.id.gridviewCategory);
 
-        /*List<String> categories = new ArrayList<>();
-        categories.add("Java");
-        categories.add("C++");
-        categories.add("C#");
-        categories.add("Python");
-        categories.add("JavaScript");
-        categories.add("SQL");
-        categories.add("FrontEnd");
-        categories.add("Cloud Computing");
-        categories.add("Hardware Computer");
-        categories.add("Software Computer");
-        categories.add("Communication and Computer Networks");*/
         CategoryAdapter adapter = new CategoryAdapter(SplashActivity.catList);
         grvCategory.setAdapter(adapter);
     }

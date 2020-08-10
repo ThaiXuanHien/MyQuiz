@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myquiz.R;
+import com.example.myquiz.model.Category;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,7 +32,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private TextView txtAppName;
     private Button btnStartSplash;
-    public static List<String> catList = new ArrayList<>();
+    public static List<Category> catList = new ArrayList<>();
+    public static int selected_cat_index = 0;
     private FirebaseFirestore firestore;
 
     @Override
@@ -70,11 +72,11 @@ public class SplashActivity extends AppCompatActivity {
                     if (doc.exists()) {
                         long count = (long) doc.get("COUNT");
                         for (int i = 1; i <= count; i++) {
-                            String catName = doc.getString("CAT" + i);
-                            catList.add(catName);
+                            String catId = doc.getString("CAT" + i + "_ID");
+                            String catName = doc.getString("CAT" + i + "_NAME");
+                            catList.add(new Category(catId,catName));
                         }
-                    }
-                    else{
+                    } else {
                         Toast.makeText(SplashActivity.this, "No Categoty Document Exists!", Toast.LENGTH_SHORT).show();
                         finish();
                     }

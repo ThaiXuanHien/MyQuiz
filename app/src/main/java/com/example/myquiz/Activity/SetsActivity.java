@@ -14,14 +14,23 @@ import android.widget.Toast;
 import com.example.myquiz.Adapter.SetsAdapter;
 import com.example.myquiz.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.myquiz.Activity.SplashActivity.catList;
+import static com.example.myquiz.Activity.SplashActivity.selected_cat_index;
+
 public class SetsActivity extends AppCompatActivity {
     private GridView grvSets;
     private FirebaseFirestore firestore;
-    public static int catId;
+    public static List<String> setList = new ArrayList<>();
+    public static String catName;
     private Dialog loadingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +42,9 @@ public class SetsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbarSets);
         setSupportActionBar(toolbar);
 
-        String title = getIntent().getStringExtra("category");
-        catId = getIntent().getIntExtra("categoryId",1);
 
-        getSupportActionBar().setTitle(title);
+        catName = getIntent().getStringExtra("category");
+        getSupportActionBar().setTitle(catList.get(selected_cat_index).getName());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         loadingDialog = new Dialog(SetsActivity.this);
@@ -44,7 +52,7 @@ public class SetsActivity extends AppCompatActivity {
         loadingDialog.setCancelable(false);
         loadingDialog.getWindow().setBackgroundDrawableResource(R.drawable.progress_background);
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-        loadingDialog.show();
+
         firestore = FirebaseFirestore.getInstance();
         
         loadSets();
@@ -53,30 +61,34 @@ public class SetsActivity extends AppCompatActivity {
     }
 
     private void loadSets() {
-        firestore.collection("QUIZ").document("CAT"+catId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+        setList.clear();
+        firestore.collection("QUIZ").document(catList.get(selected_cat_index).getId())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                    DocumentSnapshot doc = task.getResult();
-                    if(doc.exists()){
-                        long sets = (long) doc.get("SETS");
-                        SetsAdapter adapter = new SetsAdapter((int) sets);
-                        grvSets.setAdapter(adapter);
+                long noOfSets = (long) documentSnapshot.get("SETS");
 
-                    }
-                    else{
-                        Toast.makeText(SetsActivity.this, "No Sets", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-
+                for (int i = 1; i <= noOfSets; i++) {
+                    setList.add(documentSnapshot.getString("SET" + String.valueOf(i) + "_ID"));
                 }
-                else{
-                    Toast.makeText(SetsActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-                loadingDialog.cancel();
+                SetsAdapter adapter = new SetsAdapter(setList.size());
+                grvSets.setAdapter(adapter);
+                loadingDialog.dismiss();
+
             }
-        });
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(SetsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        loadingDialog.dismiss();
+                    }
+                });
+
+
+
     }
 
     @Override
